@@ -1,0 +1,356 @@
+SOCIALHUB - START HERE
+=======================
+
+Welcome to SocialHub! This is a complete, production-ready monorepo for managing
+multiple social media platforms from a single dashboard.
+
+WHAT IS SOCIALHUB?
+==================
+SocialHub is a multi-platform social media management tool that allows users to:
+- Manage Facebook, Instagram, YouTube, TikTok, and LinkedIn accounts
+- Create and schedule posts across multiple platforms
+- Track analytics and engagement metrics
+- Upload and organize media files
+- Connect multiple brands with separate social accounts
+
+QUICK START (5 MINUTES)
+======================
+
+1. Install Dependencies
+   $ npm install
+
+2. Set Up Environment
+   Create .env file in root with database connection:
+   DATABASE_URL=postgresql://localhost/socialhub
+
+3. Initialize Database
+   $ npm run db:setup
+
+4. Start Development Servers
+   $ npm run dev
+   Backend: http://localhost:3000
+   Frontend: http://localhost:5173
+
+5. Login to Dashboard
+   - Register new account at /register
+   - Login at /login
+   - Create a brand
+   - Connect social accounts via OAuth
+
+FOLDER STRUCTURE EXPLAINED
+==========================
+
+/socialhub
+├── apps/
+│   ├── api/                    # Backend (NestJS)
+│   │   ├── src/
+│   │   │   ├── auth/          # User login/registration
+│   │   │   ├── brands/        # Brand management
+│   │   │   ├── oauth/         # Platform authentication
+│   │   │   ├── posts/         # Post creation/scheduling
+│   │   │   ├── media/         # File uploads
+│   │   │   ├── queue/         # Job scheduling
+│   │   │   └── analytics/     # Metrics & reporting
+│   │   └── prisma/            # Database definitions
+│   │
+│   └── web/                    # Frontend (React + Zustand)
+│       ├── src/
+│       │   ├── pages/         # Full page views
+│       │   ├── components/    # Reusable UI components
+│       │   └── store/         # State management
+│       └── public/            # Static assets
+│
+└── docs/                       # Documentation files
+
+
+KEY TECHNOLOGIES
+================
+
+Backend:
+  - NestJS: Modern Node.js framework
+  - Prisma: Database ORM
+  - PostgreSQL: Main database
+  - Redis: Queue & caching
+  - Bull: Job queue processor
+  - JWT: Authentication tokens
+
+Frontend:
+  - React 18: UI library
+  - Zustand: State management
+  - Vite: Build tool
+  - TypeScript: Type safety
+  - Tailwind CSS: Styling
+  - Lucide Icons: Icon library
+
+
+MAIN FEATURES
+=============
+
+1. Multi-Platform Integration
+   ✓ OAuth 2.0 for secure authentication
+   ✓ Dedicated publishers for each platform
+   ✓ Platform-specific formatting
+
+2. Post Management
+   ✓ Draft posts
+   ✓ Schedule posts for later
+   ✓ Multi-platform publishing
+   ✓ Media attachments
+
+3. Analytics
+   ✓ Track engagement metrics
+   ✓ View analytics by platform
+   ✓ Historical data tracking
+
+4. Brand Management
+   ✓ Manage multiple brands
+   ✓ Separate social accounts per brand
+   ✓ Brand-specific analytics
+
+
+COMMON TASKS
+============
+
+Creating a Post:
+1. Go to Dashboard
+2. Select a brand from dropdown
+3. Click "Create a Post"
+4. Write content
+5. Select platforms
+6. Schedule or publish
+
+Adding a Social Account:
+1. In Dashboard, click brand settings
+2. Click "Connect Account"
+3. Select platform
+4. Authorize with platform credentials
+5. Account is now connected
+
+Viewing Analytics:
+1. Select brand from dropdown
+2. View metrics on right sidebar
+3. Check calendar for scheduled posts
+
+
+API ENDPOINTS (FOR DEVELOPERS)
+==============================
+
+Authentication:
+  POST   /auth/register       Register new user
+  POST   /auth/login          User login
+  GET    /auth/me             Current user
+
+Brands:
+  GET    /brands              List all brands
+  POST   /brands              Create brand
+  GET    /brands/:id          Get brand details
+
+Posts:
+  GET    /posts               List posts
+  POST   /posts               Create post
+  PUT    /posts/:id           Update post
+  POST   /posts/:id/publish   Publish immediately
+  POST   /posts/:id/schedule  Schedule for later
+
+Media:
+  GET    /media               List media
+  POST   /media/upload        Upload file
+  DELETE /media/:id           Delete file
+
+OAuth:
+  GET    /oauth/authorize/:platform     Start OAuth flow
+  POST   /oauth/callback/:platform      Handle callback
+
+
+DATABASE MODELS
+===============
+
+User
+  - Email & password (encrypted)
+  - Profile info (name, avatar)
+  - Created/updated timestamps
+
+Brand
+  - Name & description
+  - Logo & website
+  - Belongs to one user
+
+OAuthAccount
+  - Connected social account
+  - Platform-specific tokens
+  - Linked to brand & user
+
+Post
+  - Content & title
+  - Scheduled/published dates
+  - Status: draft/scheduled/published/failed
+  - Attached media files
+
+Media
+  - File storage key
+  - Type: image/video/document
+  - Dimensions & size
+
+Analytics
+  - Daily metrics per platform
+  - Views, engagement, comments
+  - Linked to brand
+
+
+ENVIRONMENT VARIABLES
+=====================
+
+Backend (.env at root):
+  NODE_ENV=development
+  DATABASE_URL=postgresql://localhost/socialhub
+  REDIS_HOST=localhost
+  REDIS_PORT=6379
+  JWT_SECRET=your-secret-key
+  API_URL=http://localhost:3000
+
+  # OAuth Credentials (get from platform developer portals)
+  FACEBOOK_APP_ID=...
+  FACEBOOK_APP_SECRET=...
+  INSTAGRAM_APP_ID=...
+  INSTAGRAM_APP_SECRET=...
+  YOUTUBE_CLIENT_ID=...
+  YOUTUBE_CLIENT_SECRET=...
+  TIKTOK_CLIENT_KEY=...
+  TIKTOK_CLIENT_SECRET=...
+  LINKEDIN_CLIENT_ID=...
+  LINKEDIN_CLIENT_SECRET=...
+
+Frontend (apps/web/.env.local):
+  VITE_API_URL=http://localhost:3000
+
+
+DEVELOPMENT WORKFLOW
+====================
+
+1. Start Dev Servers
+   $ npm run dev
+   (Runs both backend and frontend)
+
+2. Make Changes
+   - Edit TypeScript files
+   - Hot reload enabled for both
+   - Check errors in terminal
+
+3. Database Changes
+   $ npm run db:push    (Apply schema changes)
+   $ npm run db:studio  (View data in browser)
+
+4. Testing
+   $ npm run test       (Run tests)
+   $ npm run lint       (Check code style)
+
+5. Build for Production
+   $ npm run build      (Compile everything)
+
+
+DEPLOYING TO PRODUCTION
+=======================
+
+Quick Steps:
+1. Follow DEPLOYMENT_GUIDE.md in /docs
+2. Set up PostgreSQL & Redis on server
+3. Configure environment variables
+4. Run: npm run build
+5. Run: npm start
+6. Set up Nginx reverse proxy
+7. Enable HTTPS with Let's Encrypt
+
+For detailed instructions, see docs/DEPLOYMENT_GUIDE.md
+
+
+TROUBLESHOOTING
+===============
+
+Issue: "Cannot connect to database"
+Solution: Check DATABASE_URL in .env and ensure PostgreSQL is running
+  $ psql -U postgres (test connection)
+
+Issue: "Redis connection error"
+Solution: Start Redis service
+  $ redis-server  (or sudo systemctl start redis-server)
+
+Issue: Port 3000 already in use
+Solution: Kill existing process or change PORT in .env
+  $ lsof -i :3000
+  $ kill -9 <PID>
+
+Issue: Dependencies installation fails
+Solution: Clear cache and retry
+  $ npm cache clean --force
+  $ rm -rf node_modules
+  $ npm install
+
+
+GETTING HELP
+============
+
+1. Check documentation in /docs folder
+2. Review API endpoints in README.md
+3. Check database schema in apps/api/prisma/schema.prisma
+4. Review example code in each module
+5. Check error logs in terminal or PM2 logs
+
+
+NEXT STEPS
+==========
+
+1. [ ] Complete quick start (5 min)
+2. [ ] Register and create account
+3. [ ] Create a test brand
+4. [ ] Connect a social account (uses real OAuth)
+5. [ ] Create and schedule a test post
+6. [ ] Check analytics dashboard
+7. [ ] Review API documentation
+8. [ ] Deploy to production (if ready)
+
+
+IMPORTANT NOTES
+===============
+
+⚠️  OAuth Credentials
+    - Need real credentials from platform developer portals
+    - Sign up for each platform's developer program
+    - Configure redirect URLs
+
+⚠️  Database
+    - Use PostgreSQL 14+ for production
+    - Regular backups recommended
+    - Keep migrations in version control
+
+⚠️  Security
+    - Never commit .env files
+    - Use strong JWT_SECRET
+    - Enable HTTPS in production
+    - Rotate OAuth credentials regularly
+
+✓  This is production-ready code
+✓  All modules are fully implemented
+✓  Error handling included
+✓  Database schema complete
+✓  API endpoints functional
+
+
+QUICK REFERENCE COMMANDS
+========================
+
+npm install              Install all dependencies
+npm run dev             Start development servers
+npm run build           Build for production
+npm start               Start production build
+npm run db:setup        Initialize database
+npm run db:push         Apply schema changes
+npm run db:studio       Open database editor
+npm run test            Run tests
+npm run lint            Check code style
+
+Each app can also be run separately:
+  cd apps/api && npm run dev
+  cd apps/web && npm run dev
+
+
+Have fun building with SocialHub! 🚀

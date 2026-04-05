@@ -1,0 +1,120 @@
+SOCIALHUB - QUICK DEPLOYMENT REFERENCE
+=====================================
+
+1. PREREQUISITES
+   ✓ Node.js 18+
+   ✓ PostgreSQL 14+
+   ✓ Redis 7+
+   ✓ Domain name
+   ✓ SSL certificate
+
+2. ENVIRONMENT VARIABLES (.env)
+   DATABASE_URL=postgresql://user:pass@host/socialhub
+   REDIS_HOST=localhost
+   REDIS_PORT=6379
+   JWT_SECRET=your-secret-key
+   API_URL=https://yourdomain.com
+   [OAuth credentials for 5 platforms]
+
+3. QUICK SETUP
+   $ npm install
+   $ npm run db:setup
+   $ npm run build
+
+4. START SERVERS
+   Production:  $ npm start
+   Development: $ npm run dev
+
+5. NGINX CONFIG
+   - Reverse proxy API to :3000
+   - Serve frontend from /var/www/socialhub/apps/web/dist
+   - Enable HTTPS/SSL
+   - Configure security headers
+
+6. DATABASE
+   - Create PostgreSQL database
+   - Create user with minimal permissions
+   - Run Prisma migrations automatically on startup
+
+7. BACKGROUND JOBS
+   - Redis queue handles post scheduling
+   - Publishers push to each platform
+   - Automatic retry with exponential backoff
+
+8. MONITORING
+   - PM2 for process management
+   - View logs: pm2 logs
+   - Status: pm2 status
+
+9. BACKUP
+   - Daily database backups to S3 or local storage
+   - Keep 7-day retention policy
+   - Test restore procedures
+
+10. UPDATES
+    $ git pull origin main
+    $ npm install
+    $ npm run build
+    $ pm2 restart all
+    $ npm run db:push (if schema changes)
+
+API ENDPOINTS
+=============
+POST   /auth/register
+POST   /auth/login
+GET    /auth/me
+GET    /brands
+POST   /brands
+GET    /posts
+POST   /posts
+GET    /media
+POST   /media/upload
+GET    /oauth/authorize/:platform
+POST   /oauth/callback/:platform
+
+DATABASE MODELS
+===============
+- User (with auth)
+- Brand (per user)
+- OAuthAccount (per brand per platform)
+- Post (draft/scheduled/published)
+- Media (with S3 keys)
+- PostMedia (join table)
+- Analytics (daily metrics)
+
+PLATFORM SUPPORT
+================
+✓ Facebook     (facebook.publisher.ts)
+✓ Instagram    (instagram.publisher.ts)
+✓ YouTube      (youtube.publisher.ts)
+✓ TikTok       (tiktok.publisher.ts)
+✓ LinkedIn     (linkedin.publisher.ts)
+
+SECURITY
+========
+✓ JWT authentication (15m access, 7d refresh)
+✓ OAuth 2.0 for platform integration
+✓ Password hashing with bcrypt
+✓ CORS configured
+✓ Input validation on all endpoints
+✓ HTTPS/SSL required in production
+✓ Secrets in environment variables
+
+PERFORMANCE
+===========
+✓ Database connection pooling
+✓ Redis caching
+✓ Bull queue for background jobs
+✓ Vite code splitting
+✓ Browser caching headers
+✓ Gzip compression via Nginx
+
+FILE STRUCTURE
+==============
+socialhub/
+├── apps/api/           NestJS backend
+├── apps/web/           React frontend
+├── docs/               Documentation
+└── package.json        Workspace config
+
+For full details, see README.md and DEPLOYMENT_GUIDE.md
